@@ -23,10 +23,18 @@
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
 	<div class="row">
 		<div class="col-8">
-			<ul>
-				<li>Name: <span v-if="vhost">{{vhost.name}}</span><span v-else class="placeholder col-7"></span></li>
-				<li>Cross domains: <code v-if="vhost" v-for="(name, idx) in vhost.crossDomains" :idx="idx">{{name}}</code><span v-else class="placeholder col-7"></span></li>
-				<li v-if="vhost?.host">Host names: <code v-for="(name, idx) in vhost.host.names" :idx="idx">{{name}}</code></li>
+			<div class="float-end">
+				<div class="form-check form-switch form-check-reverse">
+					<input class="form-check-input" type="checkbox" id="showJson" v-model="showJson">
+					<label class="form-check-label" for="showJson">raw</label>
+				</div>
+			</div>
+			<pre v-show="showJson">{{vhost}}</pre>
+			<ul v-show="!showJson">
+				<li>Name: <span v-if="vhost">{{vhost.name}}</span><span v-else class="placeholder col-1"></span></li>
+				<li>Cross domains: <code v-if="vhost" v-for="(name, idx) in vhost.crossDomains" :idx="idx">{{name}}</code><span v-else class="placeholder col-1"></span></li>
+				<li>Host names: <code v-if="vhost" v-for="(name, idx) in vhost.host.names" :idx="idx">{{name}}</code><span v-else class="placeholder col-1"></span></li>
+				<li>Distribution: <span v-if="!vhost" class="placeholder col-2	"></span>{{vhost?.distribution}}</li>
 				<li v-if="vhost?.host?.tls">TLS certificate: <code>{{vhost.host.tls.certPath}}</code></li>
 				<li v-if="vhost?.host?.tls">TLS chain: <code>{{vhost.host.tls.chainCertPath}}</code></li>
 				<li v-if="vhost?.host?.tls">TLS key: <code>{{vhost.host.tls.keyPath}}</code></li>
@@ -40,8 +48,6 @@
 						<li>Timeout: {{vhost?.admissionWebhooks?.timeOut}}</li>
 					</ul>
 				</li>
-				<li>Cross-domains: <code>{{vhost?.crossDomains.join(', ')}}</code></li>
-				<li>Distribution: {{vhost?.distribution}}</li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
 				<li><a class="text-danger" href="#" @click="deleteVhost($route.params.vhost)">Delete</a></li>
 			</ul>
@@ -63,6 +69,7 @@ export default {
 		servers: null,
 		vhost: null,
 		statistics: null,
+		showJson: null,
 	}},
 	components: {
 		Statistics,
