@@ -8,7 +8,6 @@ import moment from 'moment';
 import OvenMediaEngineAPIClient from './OvenMediaEngineAPIClient.js';
 import App from './App.vue';
 import Statistics from './components/Statistics.vue';
-import ServerBreadcrumb from './components/ServerBreadcrumb.vue';
 import Home from './components/Home.vue';
 import Server from './components/Server.vue';
 import VHosts from './components/VHosts.vue';

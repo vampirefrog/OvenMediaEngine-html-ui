@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import ServerBreadcrumb from './ServerBreadcrumb.vue';
-
 export default {
 	data() { return {
 		error: null,
@@ -62,9 +60,6 @@ export default {
 		showJson: false,
 		streams: [],
 	}},
-	components: {
-		ServerBreadcrumb,
-	},
 	async created() {
 		await this.loadView();
 	},

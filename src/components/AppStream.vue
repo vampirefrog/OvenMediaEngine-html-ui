@@ -104,7 +104,6 @@
 </template>
 
 <script>
-import ServerBreadcrumb from './ServerBreadcrumb.vue';
 import Statistics from './Statistics.vue';
 
 export default {
@@ -119,7 +118,6 @@ export default {
 	}},
 	components: {
 		Statistics,
-		ServerBreadcrumb,
 	},
 	async created() {
 		await this.loadView();
