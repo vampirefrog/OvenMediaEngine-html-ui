@@ -4,7 +4,7 @@
 			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
 			<li class="breadcrumb-item">
 				{{server?.name||server?.url||$route.params.serverUrl}}
-				<a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></a>
+				<a href="#" class="dropdown-toggle ms-1" data-bs-toggle="dropdown" aria-expanded="false"></a>
 				<ul class="dropdown-menu dropdown-menu-end">
 					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)">{{server.name||server.url}}</router-link></li>
 				</ul>
@@ -17,8 +17,8 @@
 			<ul>
 				<li>Name: {{server?.name}}</li>
 				<li>URL: {{server?.url}}</li>
-				<li>Version: {{version?.version}}</li>
-				<li>Git Version: {{version?.gitVersion}}</li>
+				<li>Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.version}}</span></li>
+				<li>Git Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.gitVersion}}</span></li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
 			</ul>
 		</div>
