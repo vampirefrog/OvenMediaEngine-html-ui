@@ -1,4 +1,4 @@
 OvenMediaEngine HTML GUI
 ========================
 
-To use just open index.html from your browser.
+Demo [here](https://vampi.tech/demos/ome-client).
