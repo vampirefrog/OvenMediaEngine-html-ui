@@ -1,0 +1,88 @@
+<template>
+	<div class="row">
+		<div class="col-8">
+			<div class="float-end">
+				<div class="form-check form-switch form-check-reverse">
+					<input class="form-check-input" type="checkbox" id="showServersJson" v-model="showServersJson">
+					<label class="form-check-label" for="showServersJson">raw</label>
+				</div>
+			</div>
+			<h3>Servers</h3>
+			<pre v-show="showServersJson">{{hosts}}</pre>
+			<table class="table table-striped table-sm" v-show="!showServersJson">
+				<thead><tr><th>Host</th><th>URL</th><th></th></tr></thead>
+				<tbody>
+					<tr v-for="(host, idx) in hosts">
+						<td>
+							<router-link :to="'/'+encodeURIComponent(host.url)">{{host.name||host.url}}</router-link>
+						</td>
+						<td>
+							<a :href="host.url">{{host.url}} ☍</a>
+						</td>
+						<td class="text-end">
+							<a href="#" @click.stop.prevent="deleteHost(idx, host)" class="text-danger">Delete</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-4">
+			<div class="form form-inline">
+				<div class="form-group mb-3">
+					<label for="apiName" class="form-label">Name</label>
+					<input type="text" class="form-control" v-model="curHost.name" id="apiName">
+				</div>
+				<div class="form-group mb-3">
+					<label for="apiUrl" class="form-label">API URL</label>
+					<input type="text" class="form-control" v-model="curHost.url" id="apiUrl">
+				</div>
+				<div class="form-group mb-3">
+					<label for="apiKey" class="form-label">API Key</label>
+					<input type="text" class="form-control" v-model="curHost.token" id="apiKey">
+				</div>
+				<button type="button" class="btn btn-primary btn-justified" @click.prevent.stop="addHost()">Add</button>
+				<p class="form-text">This data is only stored in your browser's local storage</p>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+export default {
+	created() {
+		this.loadHosts();
+	},
+	data() { return {
+		error: null,
+		showServersJson: false,
+		hosts: [],
+		curHost: { name: '', url: '', token: '' },
+		vhosts: [],
+		vhostName: 'default',
+		apps: [],
+	}},
+	methods: {
+		loadHosts() {
+			try {
+				this.hosts = JSON.parse(localStorage.getItem('hosts')||'[]');
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			}
+		},
+		saveHosts() {
+			localStorage.setItem('hosts', JSON.stringify(this.hosts));
+			localStorage.setItem('curHost', this.curHost);
+		},
+		addHost() {
+			this.hosts.push({ ...this.curHost });
+			this.saveHosts();
+			this.curHost = { name: '', url: '', token: '' };
+		},
+		deleteHost(idx, host) {
+			this.hosts.splice(idx, 1);
+			localStorage.setItem('hosts', JSON.stringify(this.hosts));
+		},
+	},
+};
+</script>
