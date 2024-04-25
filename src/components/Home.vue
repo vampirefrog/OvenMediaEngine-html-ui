@@ -40,6 +40,11 @@
 					<label for="apiKey" class="form-label">API Key</label>
 					<input type="text" class="form-control" v-model="curHost.token" id="apiKey">
 				</div>
+				<div class="float-end">
+					<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(hosts||null))}`" download="hosts.json">save</a> |
+					<input type="file" ref="fileElem" accept="application/json" style="display:none" @change="loadFile($event)" />
+					<a href="#" @click.prevent="$refs.fileElem.click()">load</a>
+				</div>
 				<button type="button" class="btn btn-primary btn-justified" @click.prevent.stop="addHost()">Add</button>
 				<p class="form-text">This data is only stored in your browser's local storage</p>
 			</div>
@@ -82,6 +87,21 @@ export default {
 		deleteHost(idx, host) {
 			this.hosts.splice(idx, 1);
 			localStorage.setItem('hosts', JSON.stringify(this.hosts));
+		},
+		async loadFile($event) {
+			try {
+				this.loading++;
+				this.error = null;
+				const j = await $event?.target?.files?.[0]?.text();
+				if(!j) throw new Error('Could not read file');
+				JSON.parse(j); // throw error if it's invalid json
+				localStorage.setItem('hosts', j);
+				this.loadHosts();
+			} catch(e) {
+				console.error('Could not load hosts file', e);
+			} finally {
+				this.loading--;
+			}
 		},
 	},
 };
