@@ -23,6 +23,11 @@
 							<a href="#" @click.stop.prevent="deleteHost(idx, host)" class="text-danger">Delete</a>
 						</td>
 					</tr>
+					<tr v-if="!hosts?.length">
+						<td colspan="3" class="text-center text-secondary">
+							No servers, please add your servers from the form on the right.
+						</td>
+					</tr>
 				</tbody>
 			</table>
 			<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(hosts||null))}`" download="hosts.json">save</a> |
