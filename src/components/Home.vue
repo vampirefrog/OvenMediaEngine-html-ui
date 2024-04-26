@@ -25,6 +25,9 @@
 					</tr>
 				</tbody>
 			</table>
+			<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(hosts||null))}`" download="hosts.json">save</a> |
+			<input type="file" ref="fileElem" accept="application/json" style="display:none" @change="loadFile($event)" />
+			<a href="#" @click.prevent="$refs.fileElem.click()">load</a>
 		</div>
 		<div class="col-4">
 			<div class="form form-inline">
@@ -39,11 +42,6 @@
 				<div class="form-group mb-3">
 					<label for="apiKey" class="form-label">API Key</label>
 					<input type="text" class="form-control" v-model="curHost.token" id="apiKey">
-				</div>
-				<div class="float-end">
-					<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(hosts||null))}`" download="hosts.json">save</a> |
-					<input type="file" ref="fileElem" accept="application/json" style="display:none" @change="loadFile($event)" />
-					<a href="#" @click.prevent="$refs.fileElem.click()">load</a>
 				</div>
 				<button type="button" class="btn btn-primary btn-justified" @click.prevent.stop="addHost()">Add</button>
 				<p class="form-text">This data is only stored in your browser's local storage</p>
