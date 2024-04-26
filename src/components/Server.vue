@@ -2,12 +2,15 @@
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
+			<li class="breadcrumb-item active">
 				{{server?.name||server?.url||$route.params.serverUrl}}
 				<a href="#" class="dropdown-toggle ms-1" data-bs-toggle="dropdown" aria-expanded="false"></a>
 				<ul class="dropdown-menu dropdown-menu-end">
 					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)">{{server.name||server.url}}</router-link></li>
 				</ul>
+				<div class="spinner-border spinner-border-sm ms-1" role="status" v-if="loading">
+					<span class="visually-hidden">Loading...</span>
+				</div>
 			</li>
 		</ol>
 	</nav>
