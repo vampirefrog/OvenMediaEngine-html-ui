@@ -1,0 +1,14 @@
+- name: OME client build
+  hosts: 127.0.0.1
+  connection: local
+  tasks:
+  - name: Build with NPM
+    ansible.builtin.shell: 'npm run build'
+- name: OME client deployment
+  hosts: demo_servers
+  tasks:
+  - name: Copy files
+    ansible.builtin.copy:
+      src: ./dist/
+      dest: '{{demo_path}}/'
+      force: true
