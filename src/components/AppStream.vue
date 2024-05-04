@@ -37,11 +37,19 @@
 				<h3>Stream</h3>
 				<pre v-show="showStreamJson">{{stream}}</pre>
 				<div v-show="!showStreamJson">
-					<ul>
-						<li>Created <abbr :title="stream.input.createdTime">{{$util.fromNow(stream.input.createdTime)}}</abbr></li>
-						<li>Source: {{stream.input.sourceType}} from {{stream.input.sourceUrl}}</li>
-						<li>Name: {{stream.name}}</li>
-					</ul>
+					<div class="row">
+						<div class="col">
+							<ul>
+								<li>Created <abbr :title="stream.input.createdTime">{{$util.fromNow(stream.input.createdTime)}}</abbr></li>
+								<li>Source: {{stream.input.sourceType}} from {{stream.input.sourceUrl}}</li>
+								<li>Name: {{stream.name}}</li>
+								<li>LLHLS: <a :href="llhlsUrl">{{llhlsUrl}}</a></li>
+							</ul>
+						</div>
+						<div class="col">
+							<hls-player ref="player" :source="llhlsUrl" @hlsManifestLoading="videoLoading=true" @hlsInitPtsFound="videoLoading=false" @muted="muted=true" @unmuted="muted=false" @pause="playing = false" @play="playing = true"></hls-player>
+						</div>
+					</div>
 					<h3>Input tracks</h3>
 					<table class="table table-sm">
 						<thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Details</th></tr></thead>
@@ -105,6 +113,7 @@
 
 <script>
 import Statistics from './Statistics.vue';
+import HlsPlayer from './HlsPlayer.vue';
 
 export default {
 	data() { return {
@@ -115,9 +124,11 @@ export default {
 		stream: null,
 		statistics: null,
 		showStreamJson: false,
+		llhlsUrl: null,
 	}},
 	components: {
 		Statistics,
+		HlsPlayer,
 	},
 	async created() {
 		await this.loadView();
@@ -134,6 +145,7 @@ export default {
 				this.statistics = null;
 				await this.loadServers();
 				this.stream = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}/streams/${this.$route.params.stream}`);
+				this.llhlsUrl = `${this.$route.params.serverUrl}/${encodeURIComponent(this.$route.params.app)}/${encodeURIComponent(this.$route.params.stream)}/llhls.m3u8`;
 				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}/streams/${this.$route.params.stream}`);
 			} catch(e) {
 				console.error('Error loading view', e);
