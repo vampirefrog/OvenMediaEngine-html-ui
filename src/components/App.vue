@@ -72,6 +72,7 @@
 					<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/pushes'">Pushes</router-link></li>
 					<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams'">Streams</router-link></li>
 					<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles'">Output profiles</router-link>: <span v-for="(p, idx) in app?.outputProfiles?.outputProfile"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles/'+encodeURIComponent(p.name)">{{p.name}}</router-link></span></li>
+					<li><a href="#" @click.prevent="deleteApp()" class="text-danger">Delete</a></li>
 				</ul>
 			</div>
 		</div>
@@ -111,9 +112,24 @@ export default {
 				this.app = null;
 				this.statistics = null;
 				await this.loadServers();
-				this.app = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}`);
-				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}`);
+				this.app = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}`);
+				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}`);
 			} catch(e) {
+				console.error(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
+		async deleteApp() {
+			try {
+				this.loading++;
+				this.error = null;
+				if(!confirm(`Are you sure you want to delete ${this.$route.params.app}?`)) return;
+				await this.$api.request('DELETE', `vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}`);
+				this.$router.push({ path: `/${encodeURIComponent(this.$route.params.serverUrl)}/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps`});
+			} catch(e) {
+				console.error(e);
 				this.error = e;
 			} finally {
 				this.loading--;
