@@ -88,6 +88,8 @@ export default {
 	data() { return {
 		error: null,
 		loading: 0,
+		servers: null,
+		server: null,
 		showJson: false,
 		app: null,
 		statistics: null,
