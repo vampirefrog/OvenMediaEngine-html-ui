@@ -6,6 +6,7 @@ import { createWebHashHistory, createRouter } from 'vue-router';
 import moment from 'moment';
 
 import OvenMediaEngineAPIClient from './OvenMediaEngineAPIClient.js';
+import LocalStorageHostList from './LocalStorageHostList.js';
 import App from './App.vue';
 import Statistics from './components/Statistics.vue';
 import Home from './components/Home.vue';
@@ -50,6 +51,7 @@ const router = createRouter({
 const app = createApp({render: ()=>h(App)});
 app.config.globalProperties = {
 	$api: new OvenMediaEngineAPIClient(),
+	$storage: new LocalStorageHostList(),
 	$util: {
 		formatBytes,
 		fromNow(d) { return moment(d).fromNow(); },
@@ -58,12 +60,13 @@ app.config.globalProperties = {
 		try {
 			this.loading++;
 			this.error = null;
-			this.servers = JSON.parse(localStorage.getItem('hosts')||'[]');
-			this.server = this.servers.find(s => s.url == this.$route.params.serverUrl);
-			if(!this.server) throw new Error(`Server ${this.$route.params.serverUrl} not found`);
-			this.$api.setApiUrl(this.server.url);
-			this.$api.setAccessToken(this.server.token);
-			this.vhosts = await this.$api.get('vhosts');
+			this.servers = await this.$storage.getHosts();
+			if(this.$route.params.serverUrl) {
+				this.server = await this.$storage.getHostByUrl(this.$route.params.serverUrl);
+				this.$api.setApiUrl(this.server.url);
+				this.$api.setAccessToken(this.server.token);
+				this.vhosts = await this.$api.get('vhosts');
+			}
 		} catch(e) {
 			this.error = e;
 		} finally {

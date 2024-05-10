@@ -23,6 +23,7 @@
 				<li>Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.version}}</span></li>
 				<li>Git Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.gitVersion}}</span></li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
+				<li><a href="#" @click.prevent="deleteHost();" class="text-danger">Delete</a></li>
 			</ul>
 		</div>
 		<div class="col-4" v-if="server">
@@ -79,18 +80,25 @@ export default {
 				this.loading--;
 			}
 		},
-		saveHost() {
+		async saveHost() {
 			try {
-				const servers = JSON.parse(localStorage.getItem('hosts')||'[]');
-				const idx = servers.findIndex(s => s.url == this.$route.params.serverUrl);
-				if(idx < 0) throw new Error(`Server ${this.$route.params.serverUrl} not found`);
-				servers[idx].name = this.server.name;
-				servers[idx].token = this.server.token;
-				localStorage.setItem('hosts', JSON.stringify(servers));
+				await this.$storage.updateHostByUrl(this.$route.params.serverUrl, this.server);
 			} catch(e) {
 				this.error = e;
 			}
 		},
+		async deleteHost() {
+			try {
+				const host = this.server;
+				if(!confirm(`Are you sure you want to delete ${host.name?`${host.name} (${host.url})`:host.url}?`)) return;
+				await this.$storage.deleteHostByUrl(this.server.url);
+				this.$router.push({ path: '/' });
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			}
+		},
+
 	},
 };
 </script>

@@ -8,11 +8,11 @@
 				</div>
 			</div>
 			<h3>Servers</h3>
-			<pre v-show="showServersJson">{{hosts}}</pre>
+			<pre v-show="showServersJson">{{servers}}</pre>
 			<table class="table table-striped table-sm" v-show="!showServersJson">
 				<thead><tr><th>Host</th><th>URL</th><th></th></tr></thead>
 				<tbody>
-					<tr v-for="(host, idx) in hosts">
+					<tr v-for="(host, idx) in servers">
 						<td>
 							<router-link :to="'/'+encodeURIComponent(host.url)">{{host.name||host.url}}</router-link>
 						</td>
@@ -23,14 +23,14 @@
 							<a href="#" @click.stop.prevent="deleteHost(idx, host)" class="text-danger">Delete</a>
 						</td>
 					</tr>
-					<tr v-if="!hosts?.length">
+					<tr v-if="!servers?.length">
 						<td colspan="3" class="text-center text-secondary">
 							No servers, please add your servers from the form on the right.
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(hosts||null))}`" download="hosts.json">save</a> |
+			<a :href="`data:text/plain;charset=utf-8,${encodeURIComponent(JSON.stringify(servers||null))}`" download="hosts.json">save</a> |
 			<input type="file" ref="fileElem" accept="application/json" style="display:none" @change="loadFile($event)" />
 			<a href="#" @click.prevent="$refs.fileElem.click()">load</a>
 		</div>
@@ -58,39 +58,32 @@
 <script>
 export default {
 	created() {
-		this.loadHosts();
+		this.loadServers();
 	},
 	data() { return {
 		error: null,
 		showServersJson: false,
-		hosts: [],
+		servers: [],
 		curHost: { name: '', url: '', token: '' },
 		vhosts: [],
 		vhostName: 'default',
 		apps: [],
 	}},
 	methods: {
-		loadHosts() {
+		async addHost() {
 			try {
-				this.hosts = JSON.parse(localStorage.getItem('hosts')||'[]');
+				await this.$storage.addHost(this.curHost);
+				await this.loadServers();
+				this.curHost = { name: '', url: '', token: '' };
 			} catch(e) {
 				console.error(e);
 				this.error = e;
 			}
 		},
-		saveHosts() {
-			localStorage.setItem('hosts', JSON.stringify(this.hosts));
-			localStorage.setItem('curHost', this.curHost);
-		},
-		addHost() {
-			this.hosts.push({ ...this.curHost });
-			this.saveHosts();
-			this.curHost = { name: '', url: '', token: '' };
-		},
-		deleteHost(idx, host) {
+		async deleteHost(idx, host) {
 			if(!confirm(`Are you sure you want to delete ${host.name?`${host.name} (${host.url})`:host.url}?`)) return;
-			this.hosts.splice(idx, 1);
-			localStorage.setItem('hosts', JSON.stringify(this.hosts));
+			await this.$storage.removeHostByUrl(host.url);
+			this.loadServers();
 		},
 		async loadFile($event) {
 			try {
@@ -98,9 +91,8 @@ export default {
 				this.error = null;
 				const j = await $event?.target?.files?.[0]?.text();
 				if(!j) throw new Error('Could not read file');
-				JSON.parse(j); // throw error if it's invalid json
-				localStorage.setItem('hosts', j);
-				this.loadHosts();
+				this.$storage.setHosts(JSON.parse(j)); // throw error if it's invalid json
+				this.loadServers();
 			} catch(e) {
 				console.error('Could not load hosts file', e);
 			} finally {
