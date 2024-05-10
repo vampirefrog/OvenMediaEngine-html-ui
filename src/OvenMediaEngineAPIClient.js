@@ -11,7 +11,10 @@ export default class OvenMediaEngineAPIClient {
 			headers: { Authorization: `Basic ${this.accessToken}` },
 			method,
 		};
-		if(method == 'POST') fetchOptions.body = JSON.stringify(body);
+		if(method == 'POST') {
+			fetchOptions.body = JSON.stringify(body);
+			fetchOptions.headers['Content-type'] = 'application/json';
+		}
 		const url = `${this.apiUrl}/v1/${resource}`;
 		return fetch(url, fetchOptions).then(r => r.json()).then(r => {
 			if(Array.isArray(body)) {
