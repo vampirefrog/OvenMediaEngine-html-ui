@@ -28,7 +28,7 @@
 				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
 					<span class="visually-hidden">Loading...</span>
 				</div>
-				<a v-else href="#" @click.prevent="loadPushes()">&#128472;</a>
+				<a v-else href="#" @click.prevent="reloadPushes()">&#128472;</a>
 			</li>
 		</ol>
 	</nav>
@@ -138,7 +138,7 @@ export default {
 	watch: {
 		$route: async function(to, from) { await this.loadView(); },
 		'push.streamName': function(value) { this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}/outputProfiles/${encodeURIComponent(value)}`).then(profile => this.outputProfile = profile, err => this.error = err) },
-		autoRefresh: function(value) { if(value) this.refreshInterval = setInterval(() => this.loadPushes(), 2000); else if(this.refreshInterval) clearInterval(this.refreshInterval); },
+		autoRefresh: function(value) { if(value) this.refreshInterval = setInterval(() => this.reloadPushes(), 2000); else if(this.refreshInterval) clearInterval(this.refreshInterval); },
 	},
 	methods: {
 		async loadView() {
@@ -157,11 +157,23 @@ export default {
 				this.loading--;
 			}
 		},
+		async reloadPushes() {
+			try {
+				this.loading++;
+				this.error = null;
+				this.pushes = await this.$api.post(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}:pushes`);
+			} catch(e) {
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
 		async stopPush(id) {
 			if(!confirm(`Are you sure you want to stop push ${id}?`)) return;
 			try {
 				this.loading++;
 				await this.$api.post(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}:stopPush`, { id });
+				await this.reloadPushes();
 			} catch(e) {
 				this.error = e;
 			} finally {
