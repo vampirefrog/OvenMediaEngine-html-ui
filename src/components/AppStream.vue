@@ -44,6 +44,7 @@
 								<li>Source: {{stream.input.sourceType}} from {{stream.input.sourceUrl}}</li>
 								<li>Name: {{stream.name}}</li>
 								<li>LLHLS: <a :href="llhlsUrl">{{llhlsUrl}}</a></li>
+								<li><a href="#" class="text-danger" @click.prevent="deleteStream()">Delete</a></li>
 							</ul>
 						</div>
 						<div class="col">
@@ -149,6 +150,17 @@ export default {
 				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}/streams/${this.$route.params.stream}`);
 			} catch(e) {
 				console.error('Error loading view', e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
+		async deleteStream(stream) {
+			if(!confirm(`Are you sure you want to stop stream ${this.$route.params.stream}?`)) return;
+			try {
+				this.loading++;
+				this.streams = await this.$api.request('DELETE', `vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}/streams/${encodeURIComponent(this.$route.params.stream)}`);
+			} catch(e) {
 				this.error = e;
 			} finally {
 				this.loading--;

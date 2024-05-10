@@ -29,7 +29,7 @@
 				<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+$route.params.vhost+'/apps/'+app+'/outputProfiles'">Output profiles</router-link></td>
 				<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+$route.params.vhost+'/apps/'+app+'/pushes'">Pushes</router-link></td>
 				<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+$route.params.vhost+'/apps/'+app+'/streams'">Streams</router-link></td>
-				<td class="text-end"><a href="#" @click="deleteApp($route.params.vhost, app)" class="text-danger">Delete</a></td>
+				<td class="text-end"><a href="#" @click.stop.prevent="deleteApp($route.params.vhost, app)" class="text-danger">Delete</a></td>
 			</tr>
 		</tbody>
 	</table>
@@ -66,6 +66,7 @@ export default {
 			}
 		},
 		deleteApp(vhost, app) {
+			if(!confirm(`Are you sure you want to delete ${vhost}/${app}?`)) return;
 			this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}/apps/${encodeURIComponent(app)}`).then(() => this.loadApps(), err => this.error = err);
 		},
 	},

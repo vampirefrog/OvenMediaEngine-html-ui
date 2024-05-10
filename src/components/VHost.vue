@@ -49,7 +49,7 @@
 					</ul>
 				</li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-				<li><a class="text-danger" href="#" @click="deleteVhost($route.params.vhost)">Delete</a></li>
+				<li><a class="text-danger" href="#" @click.stop.prevent="deleteVhost($route.params.vhost)">Delete</a></li>
 			</ul>
 		</div>
 		<div class="col-4">
@@ -97,6 +97,7 @@ export default {
 			}
 		},
 		deleteVhost(vhost) {
+			if(!confirm(`Are you sure you want to delete ${vhost}?`)) return;
 			this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}`).then(() => this.loadVhosts(), err => this.error = err);
 		},
 	},

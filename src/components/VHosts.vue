@@ -133,6 +133,7 @@ export default {
 			}
 		},
 		deleteVhost(vhost) {
+			if(!confirm(`Are you sure you want to delete ${vhost}?`)) return;
 			this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}`).then(() => this.loadVhosts(), err => this.error = err);
 		},
 	},

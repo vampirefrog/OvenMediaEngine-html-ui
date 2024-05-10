@@ -40,7 +40,7 @@
 					<tbody>
 						<tr v-for="(p, idx) in streams">
 							<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams/'+encodeURIComponent(p)">{{p}}</router-link></td>
-							<td class="text-end"><a href="#" class="text-danger" @click.prevent="deleteStream($route.params.vhost, $route.params.app, p)">Delete</a></td>
+							<td class="text-end"><a href="#" class="text-danger" @click.prevent="deleteStream(p)">Delete</a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -72,7 +72,7 @@ export default {
 				this.loading++;
 				this.streams = null;
 				await this.loadServers();
-				this.streams = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}/streams`);
+				this.streams = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}/streams`);
 			} catch(e) {
 				console.error('Error loading view', e);
 				this.error = e;
@@ -80,10 +80,11 @@ export default {
 				this.loading--;
 			}
 		},
-		async deleteStream(vhost, app, stream) {
+		async deleteStream(stream) {
+			if(!confirm(`Are you sure you want to stop stream ${stream}?`)) return;
 			try {
 				this.loading++;
-				this.streams = await this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}/apps/${encodeURIComponent(app)}/streams/${encodeURIComponent(stream)}`);
+				this.streams = await this.$api.request('DELETE', `vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}/streams/${encodeURIComponent(stream)}`);
 			} catch(e) {
 				this.error = e;
 			} finally {

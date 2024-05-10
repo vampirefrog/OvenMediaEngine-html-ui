@@ -158,9 +158,10 @@ export default {
 			}
 		},
 		async stopPush(id) {
+			if(!confirm(`Are you sure you want to stop push ${id}?`)) return;
 			try {
 				this.loading++;
-				await this.$api.post(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${this.$route.params.app}:stopPush`, { id });
+				await this.$api.post(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}:stopPush`, { id });
 			} catch(e) {
 				this.error = e;
 			} finally {

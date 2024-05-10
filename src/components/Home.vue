@@ -88,6 +88,7 @@ export default {
 			this.curHost = { name: '', url: '', token: '' };
 		},
 		deleteHost(idx, host) {
+			if(!confirm(`Are you sure you want to delete ${host.name?`${host.name} (${host.url})`:host.url}?`)) return;
 			this.hosts.splice(idx, 1);
 			localStorage.setItem('hosts', JSON.stringify(this.hosts));
 		},
