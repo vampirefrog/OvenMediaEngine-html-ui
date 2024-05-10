@@ -81,6 +81,9 @@ export default {
 		$route: async function(to, from) { await this.loadView(); },
 	},
 	methods: {
+		async loadVhost() {
+			this.vhost = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}`);
+		},
 		async loadView() {
 			try {
 				this.loading++;
@@ -88,7 +91,7 @@ export default {
 				this.vhost = null;
 				this.statistics = null;
 				await this.loadServers();
-				this.vhost = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}`);
+				await this.loadVhost();
 				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}`);
 			} catch(e) {
 				this.error = e;
@@ -96,9 +99,19 @@ export default {
 				this.loading--;
 			}
 		},
-		deleteVhost(vhost) {
-			if(!confirm(`Are you sure you want to delete ${vhost}?`)) return;
-			this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}`).then(() => this.loadVhosts(), err => this.error = err);
+		async deleteVhost(vhost) {
+			try {
+				this.loading++;
+				this.error = null;
+				if(!confirm(`Are you sure you want to delete ${vhost}?`)) return;
+				await this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}`);
+				this.$router.push({ path: `/${encodeURIComponent(this.$route.params.serverUrl)}/vhosts`});
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
 		},
 	},
 };
