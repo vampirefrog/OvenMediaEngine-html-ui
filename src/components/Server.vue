@@ -23,7 +23,8 @@
 				<li>Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.version}}</span></li>
 				<li>Git Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.gitVersion}}</span></li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-				<li><a href="#" @click.prevent="deleteHost();" class="text-danger">Delete</a></li>
+				<li><a href="#" @click.prevent="reloadAllCertificates()">Reload all certificates</a></li>
+				<li><a href="#" @click.prevent="deleteHost()" class="text-danger">Delete</a></li>
 			</ul>
 		</div>
 		<div class="col-4" v-if="server">
@@ -98,8 +99,17 @@ export default {
 				this.error = e;
 			}
 		},
-
+		async reloadAllCertificates() {
+			try {
+				this.loading++;
+				await this.$api.post(`vhosts:reloadAllCertificates`);
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
 	},
 };
 </script>
-

@@ -49,6 +49,7 @@
 					</ul>
 				</li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
+				<li><a href="#" @click.prevent="reloadCertificate($route.params.vhost)">Reload certificate</a></li>
 				<li><a class="text-danger" href="#" @click.stop.prevent="deleteVhost($route.params.vhost)">Delete</a></li>
 			</ul>
 		</div>
@@ -106,6 +107,17 @@ export default {
 				if(!confirm(`Are you sure you want to delete ${vhost}?`)) return;
 				await this.$api.request('DELETE', `vhosts/${encodeURIComponent(vhost)}`);
 				this.$router.push({ path: `/${encodeURIComponent(this.$route.params.serverUrl)}/vhosts`});
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
+		async reloadCertificate(vhost) {
+			try {
+				this.loading++;
+				await this.$api.post(`vhosts/${encodeURIComponent(vhost)}:reloadCertificate`);
 			} catch(e) {
 				console.error(e);
 				this.error = e;

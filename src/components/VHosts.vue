@@ -28,6 +28,7 @@
 					<tr v-for="(vhost,idx) in vhosts" :key="idx">
 						<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent(vhost)">{{vhost}}</router-link></td>
 						<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent(vhost)+'/apps'">Apps</router-link></td>
+						<td class="text-end"><a href="#" @click.prevent="reloadCertificate(vhost)">Reload certificate</a></td>
 						<td class="text-end"><a href="#" @click.prevent="deleteVhost(vhost)" class="text-danger">Delete</a></td>
 					</tr>
 				</tbody>
@@ -165,6 +166,17 @@ export default {
 				await this.loadVhosts();
 			} catch(e) {
 				console.log(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
+		},
+		async reloadCertificate(vhost) {
+			try {
+				this.loading++;
+				await this.$api.post(`vhosts/${encodeURIComponent(vhost)}:reloadCertificate`);
+			} catch(e) {
+				console.error(e);
 				this.error = e;
 			} finally {
 				this.loading--;
