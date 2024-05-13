@@ -6,7 +6,7 @@ export default class OvenMediaEngineAPIClient {
 	setApiUrl(url) { this.apiUrl = url; }
 	setAccessToken(token) { this.accessToken = btoa(token); }
 	request(method, resource, body) {
-		console.log(method, resource, body);
+		console.info(method, resource, body);
 		let fetchOptions = {
 			headers: { Authorization: `Basic ${this.accessToken}` },
 			method,
