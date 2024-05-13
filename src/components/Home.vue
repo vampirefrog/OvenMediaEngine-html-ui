@@ -81,9 +81,17 @@ export default {
 			}
 		},
 		async deleteHost(idx, host) {
-			if(!confirm(`Are you sure you want to delete ${host.name?`${host.name} (${host.url})`:host.url}?`)) return;
-			await this.$storage.removeHostByUrl(host.url);
-			this.loadServers();
+			try {
+				this.loading++;
+				if(!confirm(`Are you sure you want to delete ${host.name?`${host.name} (${host.url})`:host.url}?`)) return;
+				await this.$storage.removeHostByUrl(host.url);
+				await this.loadServers();
+			} catch(e) {
+				console.error(e);
+				this.error = e;
+			} finally {
+				this.loading--;
+			}
 		},
 		async loadFile($event) {
 			try {
