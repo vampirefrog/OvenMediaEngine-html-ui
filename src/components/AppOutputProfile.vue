@@ -1,29 +1,5 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
-				<router-link type="button" :to="'/'+encodeURIComponent($route.params.serverUrl)">
-					{{server?.name||server?.url||$route.params.serverUrl}}
-				</router-link>
-				<a href="#" class="dropdown-toggle ms-2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles/'+encodeURIComponent($route.params.outputProfile)">{{server.name||server.url}}</router-link></li>
-				</ul>
-			</li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)">{{$route.params.vhost}}</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)">{{$route.params.app}}</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles'">Output profiles</router-link></li>
-			<li class="breadcrumb-item active" aria-current="page">
-				{{$route.params.outputProfile}}
-				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
 	<output-profile v-if="outputProfile" :profile="outputProfile"/>
 	<div v-else>No data</div>
@@ -31,6 +7,7 @@
 
 <script>
 import OutputProfile from './OutputProfile.vue';
+import Breadcrumbs from './Breadcrumbs.vue';
 
 export default {
 	data() { return {
@@ -42,6 +19,7 @@ export default {
 	}},
 	components: {
 		OutputProfile,
+		Breadcrumbs,
 	},
 	async created() {
 		await this.loadView();

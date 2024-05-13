@@ -34,18 +34,18 @@ function formatBytes(bytes, decimals = 2) {
 const router = createRouter({
 	history: createWebHashHistory(),
 	routes: [
-		{ path: '/', component: Home },
-		{ path: '/:serverUrl', component: Server },
-		{ path: '/:serverUrl/vhosts', component: VHosts },
-		{ path: '/:serverUrl/vhosts/:vhost', component: VHost },
-		{ path: '/:serverUrl/vhosts/:vhost/apps', component: Apps },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app', component: AppComponent },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app/outputProfiles', component: AppOutputProfiles },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app/outputProfiles/:outputProfile', component: AppOutputProfile },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app/pushes', component: AppPushes },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app/streams', component: AppStreams },
-		{ path: '/:serverUrl/vhosts/:vhost/apps/:app/streams/:stream', component: AppStream },
-	]
+		{ name: 'Home',           path: '/', component: Home },
+		{ name: 'Server',         path: '/:serverUrl', component: Server },
+		{ name: 'VHosts',         path: '/:serverUrl/vhosts', component: VHosts, meta: { breadcrumbs: { vhosts: true } } },
+		{ name: 'VHost',          path: '/:serverUrl/vhosts/:vhost', component: VHost, meta: { loadVhosts: true } },
+		{ name: 'Apps',           path: '/:serverUrl/vhosts/:vhost/apps', component: Apps, meta: { loadVhosts: true } },
+		{ name: 'App',            path: '/:serverUrl/vhosts/:vhost/apps/:app', component: AppComponent, meta: { loadVhosts: true, loadApps: true } },
+		{ name: 'OutputProfiles', path: '/:serverUrl/vhosts/:vhost/apps/:app/outputProfiles', component: AppOutputProfiles, meta: { loadVhosts: true, loadApps: true } },
+		{ name: 'OutputProfile',  path: '/:serverUrl/vhosts/:vhost/apps/:app/outputProfiles/:outputProfile', component: AppOutputProfile, meta: { loadVhosts: true, loadApps: true } },
+		{ name: 'Pushes',         path: '/:serverUrl/vhosts/:vhost/apps/:app/pushes', component: AppPushes, meta: { loadVhosts: true, loadApps: true } },
+		{ name: 'Streams',        path: '/:serverUrl/vhosts/:vhost/apps/:app/streams', component: AppStreams, meta: { loadVhosts: true, loadApps: true } },
+		{ name: 'Stream',         path: '/:serverUrl/vhosts/:vhost/apps/:app/streams/:stream', component: AppStream, meta: { loadVhosts: true, loadApps: true } },
+	],
 });
 
 const app = createApp({render: ()=>h(App)});
@@ -57,20 +57,11 @@ app.config.globalProperties = {
 		fromNow(d) { return moment(d).fromNow(); },
 	},
 	async loadServers() {
-		try {
-			this.loading++;
-			this.error = null;
-			this.servers = await this.$storage.getHosts();
-			if(this.$route.params.serverUrl) {
-				this.server = await this.$storage.getHostByUrl(this.$route.params.serverUrl);
-				this.$api.setApiUrl(this.server.url);
-				this.$api.setAccessToken(this.server.token);
-				this.vhosts = await this.$api.get('vhosts');
-			}
-		} catch(e) {
-			this.error = e;
-		} finally {
-			this.loading--;
+		this.servers = await this.$storage.getHosts();
+		if(this.$route.params.serverUrl) {
+			this.server = await this.$storage.getHostByUrl(this.$route.params.serverUrl);
+			this.$api.setApiUrl(this.server.url);
+			this.$api.setAccessToken(this.server.token);
 		}
 	},
 };

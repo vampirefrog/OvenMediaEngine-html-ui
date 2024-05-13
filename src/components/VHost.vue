@@ -1,25 +1,5 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
-				<router-link type="button" :to="'/'+encodeURIComponent($route.params.serverUrl)">
-					{{server?.name||server?.url||$route.params.serverUrl}}
-				</router-link>
-				<a href="#" class="dropdown-toggle ms-2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)+'/vhosts/'+encodeURIComponent($route.params.vhost)">{{server.name||server.url}}</router-link></li>
-				</ul>
-			</li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-			<li class="breadcrumb-item active" aria-current="page">
-				{{$route.params.vhost}}
-				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
 	<div class="row">
 		<div class="col-8">
@@ -49,9 +29,9 @@
 					</ul>
 				</li>
 				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-				<li><a href="#" @click.prevent="reloadCertificate($route.params.vhost)">Reload certificate</a></li>
-				<li><a class="text-danger" href="#" @click.stop.prevent="deleteVhost($route.params.vhost)">Delete</a></li>
 			</ul>
+			<button type="button" class="btn btn-primary btn-sm me-1" @click.prevent="reloadCertificate($route.params.vhost)">Reload certificate</button>
+			<button type="button" class="btn btn-danger btn-sm" @click.stop.prevent="deleteVhost($route.params.vhost)">Delete</button>
 		</div>
 		<div class="col-4">
 			<statistics :data="statistics"/>
@@ -61,6 +41,7 @@
 
 <script>
 import Statistics from './Statistics.vue';
+import Breadcrumbs from './Breadcrumbs.vue';
 
 export default {
 	data() { return {
@@ -71,9 +52,10 @@ export default {
 		vhost: null,
 		statistics: null,
 		showJson: null,
-	}},
+	} },
 	components: {
 		Statistics,
+		Breadcrumbs,
 	},
 	async created() {
 		await this.loadView();

@@ -1,29 +1,5 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
-				<router-link type="button" :to="'/'+encodeURIComponent($route.params.serverUrl)">
-					{{server?.name||server?.url||$route.params.serverUrl}}
-				</router-link>
-				<a href="#" class="dropdown-toggle ms-2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams/'+encodeURIComponent($route.params.stream)">{{server.name||server.url}}</router-link></li>
-				</ul>
-			</li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)">{{$route.params.vhost}}</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)">{{$route.params.app}}</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams'">Streams</router-link></li>
-			<li class="breadcrumb-item active" aria-current="page">
-				{{$route.params.stream}}
-				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
 	<div v-if="stream">
 		<div class="row">
@@ -44,8 +20,8 @@
 								<li>Source: {{stream.input.sourceType}} from {{stream.input.sourceUrl}}</li>
 								<li>Name: {{stream.name}}</li>
 								<li>LLHLS: <a :href="llhlsUrl">{{llhlsUrl}}</a></li>
-								<li><a href="#" class="text-danger" @click.prevent="deleteStream()">Delete</a></li>
 							</ul>
+							<button type="button" class="btn btn-sm btn-danger" @click.prevent="deleteStream()">Delete</button>
 						</div>
 						<div class="col">
 							<hls-player ref="player" :source="llhlsUrl" @hlsManifestLoading="videoLoading=true" @hlsInitPtsFound="videoLoading=false" @muted="muted=true" @unmuted="muted=false" @pause="playing = false" @play="playing = true"></hls-player>
@@ -115,6 +91,7 @@
 <script>
 import Statistics from './Statistics.vue';
 import HlsPlayer from './HlsPlayer.vue';
+import Breadcrumbs from './Breadcrumbs.vue';
 
 export default {
 	data() { return {
@@ -130,6 +107,7 @@ export default {
 	components: {
 		Statistics,
 		HlsPlayer,
+		Breadcrumbs,
 	},
 	async created() {
 		await this.loadView();

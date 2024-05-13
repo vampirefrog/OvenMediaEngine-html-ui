@@ -1,37 +1,5 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<div class="float-end">
-			<div class="float-end">
-				<div class="form-check form-switch form-check-reverse">
-					<input class="form-check-input" type="checkbox" id="autoRefresh" v-model="autoRefresh">
-					<label class="form-check-label" for="autoRefresh">auto refresh</label>
-				</div>
-			</div>
-		</div>
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
-				<router-link type="button" :to="'/'+encodeURIComponent($route.params.serverUrl)">
-					{{server?.name||server?.url||$route.params.serverUrl}}
-				</router-link>
-				<a href="#" class="dropdown-toggle ms-2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/pushes'">{{server.name||server.url}}</router-link></li>
-				</ul>
-			</li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)">{{$route.params.vhost}}</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-			<li class="breadcrumb-item"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)">{{$route.params.app}}</router-link></li>
-			<li class="breadcrumb-item active" aria-current="page">
-				Pushes
-				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-				<a v-else href="#" @click.prevent="reloadPushes()">&#128472;</a>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="row">
 		<div class="col-8">
 			<div class="alert alert-danger" v-if="error">{{error}}</div>
@@ -110,7 +78,11 @@
 </template>
 
 <script>
+import Breadcrumbs from './Breadcrumbs.vue';
 export default {
+	components: {
+		Breadcrumbs,
+	},
 	data() { return {
 		loading: 0,
 		error: null,

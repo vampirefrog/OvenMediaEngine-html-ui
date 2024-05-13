@@ -1,28 +1,10 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item">
-				<router-link type="button" :to="'/'+encodeURIComponent($route.params.serverUrl)">
-					{{server?.name||server?.url||$route.params.serverUrl}}
-				</router-link>
-				<a href="#" class="dropdown-toggle ms-2" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)+'/vhosts/'">{{server.name||server.url}}</router-link></li>
-				</ul>
-			</li>
-			<li class="breadcrumb-item active" aria-current="page">
-				vhosts
-				<div class="spinner-border spinner-border-sm" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
 	<div class="row">
 		<div class="col-8">
-			<table class="table table-sm table-striped">
+			<div v-if="loading>0">Loading...</div>
+			<table v-else class="table table-sm table-striped">
 				<thead><tr><th>VHost</th><th></th><th></th></tr></thead>
 				<tbody>
 					<tr v-for="(vhost,idx) in vhosts" :key="idx">
@@ -30,6 +12,9 @@
 						<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent(vhost)+'/apps'">Apps</router-link></td>
 						<td class="text-end"><a href="#" @click.prevent="reloadCertificate(vhost)">Reload certificate</a></td>
 						<td class="text-end"><a href="#" @click.prevent="deleteVhost(vhost)" class="text-danger">Delete</a></td>
+					</tr>
+					<tr v-if="!vhosts?.length">
+						<td colspan="4" class="text-center"><i>No vhosts</i></td>
 					</tr>
 				</tbody>
 			</table>
@@ -71,7 +56,12 @@
 </template>
 
 <script>
+import Breadcrumbs from './Breadcrumbs.vue';
+
 export default {
+	components: {
+		Breadcrumbs,
+	},
 	data() { return {
 		loading: 0,
 		error: null,

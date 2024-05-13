@@ -1,31 +1,20 @@
 <template>
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><router-link to="/">Servers</router-link></li>
-			<li class="breadcrumb-item active">
-				{{server?.name||server?.url||$route.params.serverUrl}}
-				<a href="#" class="dropdown-toggle ms-1" data-bs-toggle="dropdown" aria-expanded="false"></a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<li v-for="(server, idx) in servers" :key="idx"><router-link class="dropdown-item" :to="'/'+encodeURIComponent(server.url)">{{server.name||server.url}}</router-link></li>
-				</ul>
-				<div class="spinner-border spinner-border-sm ms-1" role="status" v-if="loading">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
+	<breadcrumbs/>
 	<div class="row">
 		<div class="col-8">
-			<div class="alert alert-danger" v-if="error">{{error}}</div>
-			<ul>
-				<li>Name: {{server?.name}}</li>
-				<li>URL: {{server?.url}}</li>
-				<li>Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.version}}</span></li>
-				<li>Git Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.gitVersion}}</span></li>
-				<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
-				<li><a href="#" @click.prevent="reloadAllCertificates()">Reload all certificates</a></li>
-				<li><a href="#" @click.prevent="deleteHost()" class="text-danger">Delete</a></li>
-			</ul>
+			<div v-if="loading>0">Loading...</div>
+			<div v-else>
+				<div class="alert alert-danger" v-if="error">{{error}}</div>
+				<ul>
+					<li>Name: {{server?.name}}</li>
+					<li>URL: {{server?.url}}</li>
+					<li>Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.version}}</span></li>
+					<li>Git Version: <span class="placeholder col-1" v-if="!version"></span><span v-else>{{version?.gitVersion}}</span></li>
+					<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
+				</ul>
+				<button type="button" class="btn btn-primary btn-sm me-1" @click.prevent="reloadAllCertificates()">Reload all certificates</button>
+				<button type="button" class="btn btn-danger btn-sm" @click.prevent="deleteHost()">Delete</button>
+			</div>
 		</div>
 		<div class="col-4" v-if="server">
 			<div class="form form-inline">
@@ -35,7 +24,7 @@
 				</div>
 				<div class="form-group mb-3">
 					<label for="apiUrl" class="form-label">API URL</label>
-						<input type="text" readonly disabled class="form-control" v-model="server.url" id="apiUrl">
+					<input type="text" readonly disabled class="form-control" v-model="server.url" id="apiUrl">
 				</div>
 				<div class="form-group mb-3">
 					<label for="apiKey" class="form-label">API Key</label>
@@ -51,7 +40,12 @@
 </template>
 
 <script>
+import Breadcrumbs from './Breadcrumbs.vue';
+
 export default {
+	components: {
+		Breadcrumbs,
+	},
 	data() { return {
 		loading: 0,
 		error: null,
