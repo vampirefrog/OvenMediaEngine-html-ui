@@ -1,17 +1,22 @@
 <template>
 	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
-	<div v-if="outputProfiles && outputProfiles.length > 0">
-		<table class="table table-sm">
-			<thead><tr><th>Name</th></tr></thead>
-			<tbody>
-				<tr v-for="(p, idx) in outputProfiles">
-					<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles/'+encodeURIComponent(p)">{{p}}</router-link></td>
-				</tr>
-			</tbody>
-		</table>
+	<div v-if="loading>0">
+		Loading...
 	</div>
-	<div v-else>No data</div>
+	<div v-else>
+		<div v-if="outputProfiles && outputProfiles.length > 0">
+			<table class="table table-sm">
+				<thead><tr><th>Name</th></tr></thead>
+				<tbody>
+					<tr v-for="(p, idx) in outputProfiles">
+						<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles/'+encodeURIComponent(p)">{{p}}</router-link></td>
+					</tr>
+					<tr v-if="!outputProfiles.length"><td colspan="1" class="text-center"><i>No data</i></td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </template>
 
 <script>

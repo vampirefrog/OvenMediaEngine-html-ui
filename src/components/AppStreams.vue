@@ -1,30 +1,33 @@
 <template>
 	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
-	<div v-if="streams && streams.length > 0">
-		<div class="row">
-			<div class="col-8">
-				<div class="float-end">
-					<div class="form-check form-switch form-check-reverse">
-						<input class="form-check-input" type="checkbox" id="showJson" v-model="showJson">
-						<label class="form-check-label" for="showJson">raw</label>
+	<div v-if="loading>0">Loading...</div>
+	<div v-else>
+		<div v-if="streams && streams.length > 0">
+			<div class="row">
+				<div class="col-8">
+					<div class="float-end">
+						<div class="form-check form-switch form-check-reverse">
+							<input class="form-check-input" type="checkbox" id="showJson" v-model="showJson">
+							<label class="form-check-label" for="showJson">raw</label>
+						</div>
 					</div>
+					<h3>Streams</h3>
+					<pre v-show="showJson">{{streams}}</pre>
+					<table class="table table-sm" v-show="!showJson">
+						<thead><tr><th>Stream ID</th><th></th></tr></thead>
+						<tbody>
+							<tr v-for="(p, idx) in streams">
+								<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams/'+encodeURIComponent(p)">{{p}}</router-link></td>
+								<td class="text-end"><a href="#" class="text-danger" @click.prevent="deleteStream(p)">Delete</a></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
-				<h3>Streams</h3>
-				<pre v-show="showJson">{{streams}}</pre>
-				<table class="table table-sm" v-show="!showJson">
-					<thead><tr><th>Stream ID</th><th></th></tr></thead>
-					<tbody>
-						<tr v-for="(p, idx) in streams">
-							<td><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams/'+encodeURIComponent(p)">{{p}}</router-link></td>
-							<td class="text-end"><a href="#" class="text-danger" @click.prevent="deleteStream(p)">Delete</a></td>
-						</tr>
-					</tbody>
-				</table>
 			</div>
 		</div>
+		<div v-else-if="loading==0">No streams</div>
 	</div>
-	<div v-else-if="loading==0">No streams</div>
 </template>
 
 <script>

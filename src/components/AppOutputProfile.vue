@@ -1,8 +1,11 @@
 <template>
 	<breadcrumbs/>
 	<div class="alert alert-danger" v-if="error">{{error}}</div>
-	<output-profile v-if="outputProfile" :profile="outputProfile"/>
-	<div v-else>No data</div>
+	<div v-if="loading>0">Loading...</div>
+	<div v-else>
+		<output-profile v-if="outputProfile" :profile="outputProfile"/>
+		<div v-else>No data</div>
+	</div>
 </template>
 
 <script>

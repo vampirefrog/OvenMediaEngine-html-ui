@@ -3,7 +3,8 @@
 	<div class="row">
 		<div class="col-8">
 			<div class="alert alert-danger" v-if="error">{{error}}</div>
-			<div v-if="pushes">
+			<div v-if="loading>0">Loading...</div>
+			<div v-else-if="pushes">
 				<div class="float-end">
 					<div class="form-check form-switch form-check-reverse">
 						<input class="form-check-input" type="checkbox" id="showJson" v-model="showJson">
