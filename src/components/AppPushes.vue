@@ -14,7 +14,7 @@
 				<h3>Pushes</h3>
 				<pre v-show="showJson">{{pushes}}</pre>
 				<table class="table table-sm" v-show="!showJson">
-					<thead><tr><th>URL</th><th>Sent</th><th></th></tr></thead>
+					<thead><tr><th>URL</th><th></th></tr></thead>
 					<tbody>
 						<tr v-for="(p, idx) in pushes">
 							<td>{{p.id}}<br />{{p.state}} {{p.protocol}} <router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams/'+encodeURIComponent(p.stream.name)">{{p.stream.name}}</router-link><br />{{p.url}}<br /><code>{{prettyBytes(p.sentBytes)}}/{{readableTime(p.sentTime)}} sent, {{prettyBytes(p.totalsentBytes)}}/{{readableTime(p.totalsentTime)}} total, {{prettyBytes(p.totalsentBytes/p.totalsentTime*1000)}}/s average</code></td>
