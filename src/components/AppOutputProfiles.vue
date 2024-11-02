@@ -15,6 +15,7 @@
 					<tr v-if="!outputProfiles.length"><td colspan="1" class="text-center"><i>No data</i></td></tr>
 				</tbody>
 			</table>
+			<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application/output-profile#get-v1-vhosts-vhost-apps-app-outputprofiles">Documentation for <code>GET /v1/vhosts/{vhost}/apps/{app}/outputProfiles</code></a>
 		</div>
 	</div>
 </template>

@@ -5,6 +5,7 @@
 	<div v-else>
 		<output-profile v-if="outputProfile" :profile="outputProfile"/>
 		<div v-else>No data</div>
+		<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application/output-profile#get-v1-vhosts-vhost-apps-app-outputprofiles-profile">Documentation for <code>GET /v1/vhosts/{vhost}/apps/{app}/outputProfiles/{profile}</code></a>
 	</div>
 </template>
 

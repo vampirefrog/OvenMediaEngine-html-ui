@@ -15,6 +15,7 @@
 			</tbody>
 		</table>
 		<div v-else>No apps</div>
+		<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application#get-v1-vhosts-vhost-apps">Documentation for <code>GET /v1/vhosts/{vhost}/apps</code></a>
 	</div>
 </template>
 

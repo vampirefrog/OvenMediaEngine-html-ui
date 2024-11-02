@@ -23,6 +23,7 @@
 							</tr>
 						</tbody>
 					</table>
+					<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application/stream#get-v1-vhosts-vhost-apps-app-streams">Documentation for <code>GET /v1/vhosts/{vhost}/apps/{app}/streams</code></a>
 				</div>
 			</div>
 		</div>

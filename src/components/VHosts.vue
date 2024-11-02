@@ -18,6 +18,7 @@
 					</tr>
 				</tbody>
 			</table>
+			<a target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost#get-v1-vhosts">Documentation for <code>GET /v1/vhosts</code></a>
 		</div>
 		<div class="col-4">
 			<form @submit.prevent="addVhost()">
@@ -50,6 +51,7 @@
 					<input class="form-control" id="vhostSignedPolicyPolicyQueryKeyName" v-model="vhost.signedPolicy.policyQueryKeyName">
 				</div>
 				<button class="btn btn-primary" type="submit">Add</button>
+				<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost#post-v1-vhosts">Documentation for <code>POST /v1/vhosts</code></a>
 			</form>
 		</div>
 	</div>

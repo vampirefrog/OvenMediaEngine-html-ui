@@ -32,6 +32,7 @@
 			</ul>
 			<button type="button" class="btn btn-primary btn-sm me-1" @click.prevent="reloadCertificate($route.params.vhost)">Reload certificate</button>
 			<button type="button" class="btn btn-danger btn-sm" @click.stop.prevent="deleteVhost($route.params.vhost)">Delete</button>
+			<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost#get-v1-vhosts-vhost">Documentation for <code>GET /v1/vhosts/{vhost}</code></a>
 		</div>
 		<div class="col-4">
 			<statistics :data="statistics"/>

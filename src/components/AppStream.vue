@@ -79,6 +79,7 @@
 						</table>
 					</div>
 				</div>
+				<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application/stream#get-v1-vhosts-vhost-apps-app-streams-stream">Documentation for <code>GET /v1/vhosts/{vhost}/apps/{app}/streams/{stream}</code></a>
 			</div>
 			<div class="col-4">
 				<statistics :data="statistics"/>

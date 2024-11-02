@@ -24,6 +24,7 @@
 				</table>
 			</div>
 			<div v-else>No pushes</div>
+			<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application/push#post-v1-vhosts-vhost-apps-app-pushes">Documentation for <code>POST /v1/vhosts/{vhost}/apps/{app}:pushes</code></a>
 		</div>
 		<div class="col-4">
 			<form action="" @submit.prevent.stop="startPush()">

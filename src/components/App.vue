@@ -53,6 +53,7 @@
 						<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/streams'">Streams</router-link></li>
 						<li><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles'">Output profiles</router-link>: <span v-for="(p, idx) in app?.outputProfiles?.outputProfile"><router-link :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)+'/outputProfiles/'+encodeURIComponent(p.name)">{{p.name}}</router-link></span></li>
 					</ul>
+					<a class="float-end" target="_blank" href="https://airensoft.gitbook.io/ovenmediaengine/rest-api/v1/virtualhost/application#get-v1-vhosts-vhost-apps-app">Documentation for <code>GET /v1/vhosts/{vhost}/apps/{app}</code></a>
 					<button type="button" class="btn btn-danger btn-sm" @click.prevent="deleteApp()">Delete</button>
 				</div>
 			</div>
