@@ -75,6 +75,7 @@ export default {
 		server: null,
 		showJson: false,
 		app: null,
+		apps: null,
 		statistics: null,
 	}},
 	components: {
@@ -97,6 +98,7 @@ export default {
 				await this.loadServers();
 				this.app = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}`);
 				this.statistics = await this.$api.get(`stats/current/vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps/${encodeURIComponent(this.$route.params.app)}`);
+				this.apps = await this.$api.get(`vhosts/${encodeURIComponent(this.$route.params.vhost)}/apps`);
 			} catch(e) {
 				console.error(e);
 				this.error = e;

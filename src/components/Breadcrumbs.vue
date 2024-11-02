@@ -17,7 +17,14 @@
 			<li class="breadcrumb-item" :class="{ active: !!$route.params.serverUrl }" v-if="$route.params.serverUrl && $route.name != 'Server'"><span v-if="$route.name == 'VHosts'">vhosts</span><router-link v-else :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts'">vhosts</router-link></li>
 			<li class="breadcrumb-item" :class="{ active: !!$route.params.vhost }" v-if="$route.params.vhost"><span v-if="$route.name == 'VHost'">{{$route.params.vhost}}</span><router-link v-else :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)">{{$route.params.vhost}}</router-link></li>
 			<li class="breadcrumb-item" :class="{ active: $route.name == 'Apps' }" v-if="$route.params.vhost && $route.name != 'VHost'"><span v-if="$route.name == 'Apps'">Apps</span><router-link v-else :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps'">Apps</router-link></li>
-			<li class="breadcrumb-item" :class="{ active: $route.name == 'App' }" v-if="$route.params.app"><span v-if="$route.name == 'App'">{{$route.params.app}}</span><router-link v-else :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)">{{$route.params.app}}</router-link></li>
+			<li class="breadcrumb-item" :class="{ active: $route.name == 'App' }" v-if="$route.params.app">
+				<span v-if="$route.name == 'App'">{{$route.params.app}}</span>
+				<router-link v-else :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent($route.params.app)">{{$route.params.app}}</router-link>
+				<a href="#" class="dropdown-toggle ms-1" data-bs-toggle="dropdown" aria-expanded="false"></a>
+				<ul class="dropdown-menu dropdown-menu-end">
+					<li v-for="app in apps"><router-link class="dropdown-item" :to="'/'+encodeURIComponent($route.params.serverUrl)+'/vhosts/'+encodeURIComponent($route.params.vhost)+'/apps/'+encodeURIComponent(app)+($route.name == 'Pushes' ? '/pushes' : '')+($route.name == 'Streams' || $route.name == 'Stream' ? '/streams' : '')+($route.name == 'OutputProfiles' ? '/outputProfiles' : '')+($route.params.outputProfile?'/outputProfiles/'+encodeURIComponent($route.params.outputProfile):'')">{{app}}</router-link></li>
+				</ul>
+			</li>
 			<li class="breadcrumb-item" :class="{ active: $route.name == 'Streams' || $route.name == 'Pushes' || $route.name == 'OutputProfiles' }" v-if="$route.params.app && $route.name != 'App'">
 				<span v-if="$route.name == 'Streams'">Streams</span>
 				<span v-else-if="$route.name == 'Pushes'">Pushes</span>
